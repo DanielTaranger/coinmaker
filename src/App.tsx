@@ -30,6 +30,8 @@ export interface Rock extends Item {
 }
 
 function App() {
+  const [timeRemaining, setTimeRemaining] = useState(0); // 10 minutes in seconds
+
   const [money, setMoney] = useState(10);
   const [multiplier, setMultiplier] = useState(1);
   const [modifier, setModifier] = useState(0);
@@ -49,6 +51,24 @@ function App() {
 
   const [flasks, setFlask] = useState<Flask[]>([]);
   const [rocks, setRocks] = useState<Rock[]>([]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTimeRemaining((prevTime) => {
+        return prevTime + 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  const formatTime = (time: number): string => {
+    const minutes = Math.floor(time / 60);
+    const seconds = time % 60;
+    return `${minutes.toString().padStart(2, "0")}:${seconds
+      .toString()
+      .padStart(2, "0")}`;
+  };
 
   const upgrade = () => {
     if (money >= upgradeClickerCost) {
@@ -281,6 +301,9 @@ function App() {
       <Typography variant="h1" sx={{ fontSize: 100, margin: 0 }}>
         e308
       </Typography>
+      <div>
+        <div>Timer: {formatTime(timeRemaining)}</div>
+      </div>
       <Box display="flex" flexDirection="column" gap={2}>
         <Card
           sx={{
