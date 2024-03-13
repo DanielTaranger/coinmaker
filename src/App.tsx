@@ -12,7 +12,7 @@ import rock4 from "./assets/rocks/4.png";
 import rock5 from "./assets/rocks/5.png";
 import rock6 from "./assets/rocks/6.png";
 
-import { Box, Button, Card, LinearProgress } from "@mui/material";
+import { Box, Button, Card, LinearProgress, Typography } from "@mui/material";
 import "./App.css";
 
 export interface Item {
@@ -278,8 +278,9 @@ function App() {
 
   return (
     <>
-      <h3>DPS: {setDesi(multiplier * modifier * 60, 3)}</h3>
-      <h1>Coins: {money.toFixed(0)}</h1>
+      <Typography variant="h1" sx={{ fontSize: 100, margin: 0 }}>
+        e308
+      </Typography>
       <Box display="flex" flexDirection="column" gap={2}>
         <Card
           sx={{
@@ -292,6 +293,8 @@ function App() {
             rowGap: 2,
           }}
         >
+          <h3>DPS: {setDesi(multiplier * modifier * 60, 3)}</h3>
+          <h1>Coins: {money.toFixed(0)}</h1>
           <Box
             sx={{
               minWidth: 600,
