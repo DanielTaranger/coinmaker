@@ -30,7 +30,7 @@ export interface Rock extends Item {
 }
 
 function App() {
-  const [timeRemaining, setTimeRemaining] = useState(0); // 10 minutes in seconds
+  const [clock, setClock] = useState(0);
 
   const [money, setMoney] = useState(10);
   const [multiplier, setMultiplier] = useState(1);
@@ -54,7 +54,7 @@ function App() {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setTimeRemaining((prevTime) => {
+      setClock((prevTime) => {
         return prevTime + 1;
       });
     }, 1000);
@@ -302,7 +302,7 @@ function App() {
         e308
       </Typography>
       <div>
-        <div>Timer: {formatTime(timeRemaining)}</div>
+        <div>Timer: {formatTime(clock)}</div>
       </div>
       <Box display="flex" flexDirection="column" gap={2}>
         <Card
