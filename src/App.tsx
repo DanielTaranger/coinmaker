@@ -95,7 +95,7 @@ function App() {
       const newStartHP = Math.round(StartHP * 1.1);
       setStartHP(newStartHP);
       setCurrentHP(newStartHP);
-      setMoney(money + Math.round((StartHP / 1.1) * interest));
+      setMoney(money + Math.round((StartHP / 2) * interest));
       setProgress(100);
       updateFlask();
       updateRocks();
@@ -113,7 +113,7 @@ function App() {
       const newStartHP = Math.round(StartHP * 1.1);
       setStartHP(newStartHP);
       setCurrentHP(newStartHP);
-      setMoney(money + Math.round(money + StartHP));
+      setMoney(money + Math.round(StartHP / 2));
       setProgress(100);
       updateFlask();
       updateRocks();
