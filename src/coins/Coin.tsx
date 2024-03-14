@@ -1,6 +1,6 @@
 import "../App.css";
 import { useEffect, useState } from "react";
-import { Box, Button, Card, Typography } from "@mui/material";
+import { Box, Button, Card, LinearProgress } from "@mui/material";
 import {
   Flask,
   Rock,
@@ -9,10 +9,33 @@ import {
   mapRocks,
   rockItems,
 } from "./Items";
+import "./Coin.css";
 import ProgressBar from "./Progressbar";
+import coinAudio from "../assets/sounds/coin.mp3";
+import rockAudio from "../assets/sounds/rock.mp3";
+import glassAudio from "../assets/sounds/glass.mp3";
+import upgradeAudio from "../assets/sounds/upgrade.mp3";
+import commonAudio from "../assets/sounds/common.wav";
+import rareAudio from "../assets/sounds/rare.mp3";
+import epicAudio from "../assets/sounds/epic.wav";
+import hit1 from "../assets/sounds/hit1.mp3";
+import hit2 from "../assets/sounds/hit2.mp3";
+import hit3 from "../assets/sounds/hit3.mp3";
+import hit4 from "../assets/sounds/hit4.mp3";
+import hit5 from "../assets/sounds/hit1.mp3";
+import hit6 from "../assets/sounds/hit6.mp3";
+import { calcLogPercent, calcPercent } from "./utils";
 
 export default function Coin() {
+  const soundFiles = [hit1, hit2, hit3, hit4, hit5, hit6];
+
   const [clock, setClock] = useState(0);
+
+  const [showMoneyLost, setShowMoneyLost] = useState(false);
+  const [showMoneyGained, setShowMoneyGained] = useState(false);
+  const [moneyLost, setMoneyLost] = useState(0);
+  const [moneyGained, setMoneyGained] = useState(0);
+  const [totalProgress, setTotalProgress] = useState(0);
 
   const [money, setMoney] = useState(10);
   const [modifier, setModifier] = useState(0);
@@ -21,7 +44,7 @@ export default function Coin() {
   const [upgradeClickerCost, setupgradeClickerCost] = useState(10);
 
   const [autoClickerAmount, setAutoClickerAmount] = useState(1);
-  const [upgradeAutoClickerCost, setupgradeAutoClickerCost] = useState(50);
+  const [upgradeAutoClickerCost, setupgradeAutoClickerCost] = useState(10);
 
   const [interest, setInterest] = useState(1);
   const [interestCost, setInterestCost] = useState(100);
@@ -56,7 +79,25 @@ export default function Coin() {
       setClickAmount(Math.round(clickAmount * 1.5));
       setMoney(Math.round(money - upgradeClickerCost));
       setupgradeClickerCost(Math.round(upgradeClickerCost * 2));
+      play(upgradeAudio);
+      animateMoneyLost(upgradeClickerCost);
     }
+  };
+
+  const animateMoneyLost = (money: number) => {
+    setShowMoneyLost(true);
+    setMoneyLost(money);
+    setTimeout(() => {
+      setShowMoneyLost(false);
+    }, 1000);
+  };
+
+  const animateMoneyGained = (money: number) => {
+    setShowMoneyGained(true);
+    setMoneyGained(money);
+    setTimeout(() => {
+      setShowMoneyGained(false);
+    }, 1000);
   };
 
   const setDesi = (num: number, desi: number): number => {
@@ -67,16 +108,53 @@ export default function Coin() {
     if (money >= upgradeAutoClickerCost) {
       setAutoClickerAmount(Math.round(autoClickerAmount * 1.5));
       setMoney(Math.round(money - upgradeClickerCost));
-      setupgradeAutoClickerCost(Math.round(upgradeAutoClickerCost * 2.5));
+      setupgradeAutoClickerCost(Math.round(upgradeAutoClickerCost * 1.2));
       setModifier(modifier == 0 ? 0.05 : setDesi(modifier * 1.5, 3));
+      play(upgradeAudio);
+      animateMoneyLost(upgradeClickerCost);
     }
   };
 
   const upgradeInterest = () => {
     if (money >= interestCost) {
-      setInterest(interest * 1.1);
+      setInterest(interest * 1.5);
       setMoney(Math.round(money - interestCost));
       setInterestCost(Math.round(interestCost * 1.2));
+      play(upgradeAudio);
+      animateMoneyLost(upgradeClickerCost);
+    }
+  };
+  const autoAttack = () => {
+    const newCurrentHP = CurrentHP - modifier;
+    updateProgressbar(newCurrentHP);
+  };
+
+  const attack = () => {
+    playRandomAttackSound();
+    const newCurrentHP = CurrentHP - clickAmount;
+    updateProgressbar(newCurrentHP);
+  };
+
+  const playRandomAttackSound = () => {
+    const randomIndex = Math.floor(Math.random() * soundFiles.length);
+    play(soundFiles[randomIndex]);
+  };
+
+  const updateProgressbar = (newCurrentHP: number) => {
+    if (newCurrentHP <= 0) {
+      const newStartHP = Math.round(StartHP * 1.1);
+      setStartHP(newStartHP);
+      setCurrentHP(newStartHP);
+      setMoney(money + Math.round(StartHP / 3) * interest);
+      setProgress(100);
+      updateFlask();
+      updateRocks();
+      play(coinAudio);
+      animateMoneyGained(Math.round(StartHP / 3) * interest);
+      setTotalProgress(calcLogPercent(CurrentHP, 1.7976931348623157e308));
+    } else {
+      setCurrentHP(newCurrentHP);
+      setProgress(calcPercent(newCurrentHP, StartHP));
     }
   };
 
@@ -89,70 +167,57 @@ export default function Coin() {
     }
   });
 
-  const autoAttack = () => {
-    const newCurrentHP = CurrentHP - modifier;
-    updateProgressbar(newCurrentHP);
-  };
-
-  const attack = () => {
-    const newCurrentHP = CurrentHP - clickAmount;
-    updateProgressbar(newCurrentHP);
-  };
-
-  const updateProgressbar = (newCurrentHP: number) => {
-    if (newCurrentHP <= 0) {
-      const newStartHP = Math.round(StartHP * 1.1);
-      setStartHP(newStartHP);
-      setCurrentHP(newStartHP);
-      setMoney(money + Math.round(StartHP / 2) * interest);
-      setProgress(100);
-      updateFlask();
-      updateRocks();
-    } else {
-      setCurrentHP(newCurrentHP);
-      const percentage = (newCurrentHP / StartHP) * 100;
-      setProgress(percentage);
-    }
-  };
-
   const updateFlask = () => {
     const randVal = Math.random();
-    if (randVal <= 0.1) {
+    if (randVal <= 0.13) {
+      play(commonAudio);
       return setFlask([...flasks, flaskItems.commonFlask]);
-    } else if (randVal <= 0.15) {
+    } else if (randVal <= 0.135) {
+      play(commonAudio);
       return setFlask([...flasks, flaskItems.magicFlask]);
-    } else if (randVal <= 0.17) {
+    } else if (randVal <= 0.15) {
+      play(commonAudio);
       return setFlask([...flasks, flaskItems.rareFlask]);
-    } else if (randVal <= 0.18) {
+    } else if (randVal <= 0.16) {
+      play(rareAudio);
       return setFlask([...flasks, flaskItems.uniqueFlask]);
-    } else if (randVal <= 0.185) {
+    } else if (randVal <= 0.164) {
+      play(epicAudio);
       return setFlask([...flasks, flaskItems.legendaryFlask]);
     }
   };
 
   const updateRocks = () => {
     const randVal = Math.random();
-    console.log(randVal);
-    if (randVal <= 0.1) {
+    if (randVal <= 0.13) {
+      play(commonAudio);
       return setRocks([...rocks, rockItems.commonRock]);
-    } else if (randVal <= 0.15) {
+    } else if (randVal <= 0.135) {
+      play(commonAudio);
       return setRocks([...rocks, rockItems.magicRock]);
-    } else if (randVal <= 0.17) {
+    } else if (randVal <= 0.15) {
+      play(commonAudio);
       return setRocks([...rocks, rockItems.rareRock]);
-    } else if (randVal <= 0.18) {
+    } else if (randVal <= 0.16) {
+      play(rareAudio);
       return setRocks([...rocks, rockItems.uniqueRock]);
-    } else if (randVal <= 0.185) {
+    } else if (randVal <= 0.164) {
+      play(rareAudio);
       return setRocks([...rocks, rockItems.legendaryRock]);
-    } else if (randVal <= 0.185) {
+    } else if (randVal <= 0.166) {
+      play(epicAudio);
       return setRocks([...rocks, rockItems.epicRock]);
     }
   };
 
   const clickFlask = (index: number) => {
     setMoney(money * flasks[index].coins);
+    animateMoneyGained(money * flasks[index].coins - money);
+    setMoneyGained(money * flasks[index].coins - money);
     const copy = [...flasks];
     copy.splice(index, 1);
     setFlask(copy);
+    play(glassAudio);
   };
 
   const clickRock = (index: number) => {
@@ -160,28 +225,50 @@ export default function Coin() {
     const copy = [...rocks];
     copy.splice(index, 1);
     setRocks(copy);
+    play(rockAudio);
+  };
+
+  const play = (audioInput: string) => {
+    const audio = new Audio(audioInput);
+    audio.play();
+  };
+
+  const takeAll = () => {
+    let i = 0;
+    while (i < flasks.length || rocks.length) {
+      clickRock(i);
+      clickFlask(i);
+      i++;
+    }
   };
 
   return (
     <>
-      <Typography variant="h1" sx={{ fontSize: 100, margin: 0 }}>
-        e308
-      </Typography>
-      <div>Timer: {formatTime(clock)}</div>
+      <div style={{ visibility: "hidden" }}>Timer: {formatTime(clock)}</div>
       <Box display="flex" flexDirection="column" gap={2}>
         <Card
           sx={{
             p: 2,
+            pt: 1,
             flexDirection: "column",
             display: "inline-flex",
             alignItems: "center",
+            overflow: "visible",
             flexGrow: 1,
             flexShrink: 0,
-            rowGap: 2,
+            rowGap: 1,
           }}
         >
-          <h3>DPS: {setDesi(modifier * 60, 3)}</h3>
-          <h1>Coins: {money.toFixed(0)}</h1>
+          <Box position="relative">
+            <h1 style={{ margin: 0 }}>{money.toFixed(0)}</h1>
+            {showMoneyLost && (
+              <div className="lost">-{moneyLost.toFixed(0)}</div>
+            )}
+            {showMoneyGained && (
+              <div className="gained">+{moneyGained.toFixed(0)}</div>
+            )}
+            <h3 style={{ margin: 0 }}>DPS: {setDesi(modifier * 60, 3)}</h3>
+          </Box>
           <Box
             sx={{
               minWidth: 600,
@@ -231,6 +318,16 @@ export default function Coin() {
             </Box>
           </Box>
         </Card>
+        <p style={{ margin: -10 }}>Total progress</p>
+        <LinearProgress
+          variant="determinate"
+          value={totalProgress}
+          sx={{
+            height: "20px",
+            borderRadius: 2,
+            width: "100%",
+          }}
+        />
         <Card
           sx={{
             p: 10,
@@ -242,6 +339,11 @@ export default function Coin() {
             flexWrap: "wrap",
           }}
         >
+          <Box width="100%">
+            <Button variant="contained" onClick={() => takeAll()}>
+              Take all
+            </Button>
+          </Box>
           {mapFlasks(flasks, clickFlask)}
           {mapRocks(rocks, clickRock)}
         </Card>

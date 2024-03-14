@@ -1,4 +1,4 @@
-import { Box, LinearProgress } from "@mui/material";
+import { Box, LinearProgress, makeStyles } from "@mui/material";
 
 interface ProgressBarProps {
   progress: number;
@@ -18,10 +18,15 @@ export default function ProgressBar({
       return {
         ".MuiLinearProgress-bar": {
           backgroundColor: "red",
+          transition: "none",
         },
       };
     }
-    return {};
+    return {
+      ".MuiLinearProgress-bar": {
+        transition: "none",
+      },
+    };
   };
 
   return (
@@ -33,7 +38,6 @@ export default function ProgressBar({
           height: "20px",
           borderRadius: 2,
           ...progressStyles(),
-          animationDuration: "0.1ms",
         }}
       />
       <Box
@@ -48,8 +52,8 @@ export default function ProgressBar({
         {CurrentHP.toFixed(0)} / {StartHP} HP
       </Box>
       <Box>
-        Reward: {(StartHP / 2).toFixed(0)} x {interest.toFixed(2)} interest ={" "}
-        {((StartHP / 2) * interest).toFixed(0)} coins
+        Reward: {(StartHP / 3).toFixed(0)} x {interest.toFixed(2)} interest ={" "}
+        {((StartHP / 3) * interest).toFixed(0)} coins
       </Box>
     </>
   );

@@ -34,7 +34,7 @@ export const rockItems = {
     name: "common rock",
     src: rock1,
     interest: rand(1.05, 1.2),
-    color: "#5c5c5c",
+    color: "#a4a4a4",
   },
   magicRock: {
     name: "magic rock",
@@ -64,7 +64,7 @@ export const rockItems = {
     name: "epic rock",
     src: rock6,
     interest: rand(6, 8),
-    color: "#FFFFFF",
+    color: "#5c0000",
   },
 };
 
@@ -73,7 +73,7 @@ export const flaskItems = {
     name: "common flask",
     src: flask1,
     coins: rand(1.05, 1.1),
-    color: "#5c5c5c",
+    color: "#a4a4a4",
   },
   magicFlask: {
     name: "magic flask",
@@ -107,22 +107,22 @@ export function mapFlasks(
 ) {
   return (
     <>
-      {flasks?.map((flask, index) => {
+      {flasks.map((flask, i) => (
         <Button
-          key={index}
+          key={i}
           sx={{
             display: "flex",
             flexDirection: "column",
             backgroundColor: flask.color,
           }}
           variant="contained"
-          onClick={() => clickFlask(index)}
+          onClick={() => clickFlask(i)}
         >
           <img src={flask.src} width="50px" height="50px" />
           <span>{flask.name}</span>
           {flask.coins} x coins
-        </Button>;
-      })}
+        </Button>
+      ))}
     </>
   );
 }
@@ -130,22 +130,22 @@ export function mapFlasks(
 export function mapRocks(rocks: Rock[], clickRock: (index: number) => void) {
   return (
     <>
-      {rocks?.map((rock, index) => {
+      {rocks.map((rock, i) => (
         <Button
-          key={index}
+          key={i}
           sx={{
             display: "flex",
             flexDirection: "column",
             backgroundColor: rock.color,
           }}
           variant="contained"
-          onClick={() => clickRock(index)}
+          onClick={() => clickRock(i)}
         >
           <img src={rock.src} width="50px" height="50px" />
           <span>{rock.name}</span>
           {rock.interest} x interest
-        </Button>;
-      })}
+        </Button>
+      ))}
     </>
   );
 }
