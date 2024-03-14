@@ -1,10 +1,29 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import App from './App.tsx'
-import './index.css'
+import React from "react";
+import ReactDOM from "react-dom/client";
+import Coin from "./coins/Coin.tsx";
+import Mine from "./mine/Mine.tsx";
+import App from "./App.tsx";
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import "./index.css";
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <App />,
+  },
+  {
+    path: "/coin",
+    element: <Coin />,
+  },
+  {
+    path: "/mine",
+    element: <Mine />,
+  },
+]);
+
+ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-)
+    <RouterProvider router={router} />
+  </React.StrictMode>
+);
