@@ -270,8 +270,8 @@ export default function Coin() {
           </Box>
           <Box
             sx={{
-              minWidth: 600,
-              maxWidth: 600,
+              minWidth: 650,
+              maxWidth: 650,
               width: "100%",
             }}
           >
@@ -330,15 +330,17 @@ export default function Coin() {
         <Card
           sx={{
             p: 10,
+            pt: 0,
             height: "auto",
-            minWidth: 600,
-            maxWidth: 600,
+            minWidth: 650,
+            maxWidth: 650,
             display: "flex",
             gap: 2,
             flexWrap: "wrap",
           }}
         >
           <Box width="100%">
+            <p style={{ margin: 5 }}>{flasks.length + rocks.length} items</p>
             <Button variant="contained" onClick={() => takeAll()}>
               Take all
             </Button>
