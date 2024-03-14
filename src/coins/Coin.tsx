@@ -1,38 +1,20 @@
-import { useEffect, useState } from "react";
-import flask1 from "../assets/flasks/1.png";
-import flask2 from "../assets/flasks/2.png";
-import flask3 from "../assets/flasks/3.png";
-import flask4 from "../assets/flasks/4.png";
-import flask5 from "../assets/flasks/5.png";
-import rock1 from "../assets/rocks/1.png";
-import rock2 from "../assets/rocks/2.png";
-import rock3 from "../assets/rocks/3.png";
-import rock4 from "../assets/rocks/4.png";
-import rock5 from "../assets/rocks/5.png";
-import rock6 from "../assets/rocks/6.png";
-
-import { Box, Button, Card, LinearProgress, Typography } from "@mui/material";
 import "../App.css";
-
-export interface Item {
-  name: string;
-  src: string;
-  color: string;
-}
-
-export interface Flask extends Item {
-  coins: number;
-}
-
-export interface Rock extends Item {
-  interest: number;
-}
+import { useEffect, useState } from "react";
+import { Box, Button, Card, Typography } from "@mui/material";
+import {
+  Flask,
+  Rock,
+  flaskItems,
+  mapFlasks,
+  mapRocks,
+  rockItems,
+} from "./Items";
+import ProgressBar from "./Progressbar";
 
 export default function Coin() {
   const [clock, setClock] = useState(0);
 
   const [money, setMoney] = useState(10);
-  const [multiplier, setMultiplier] = useState(1);
   const [modifier, setModifier] = useState(0);
 
   const [clickAmount, setClickAmount] = useState(1);
@@ -99,17 +81,16 @@ export default function Coin() {
   };
 
   useEffect(() => {
-    if (multiplier * modifier > 0) {
+    if (modifier > 0) {
       const interval = setTimeout(() => {
         autoAttack();
       }, 16);
-
       return () => clearInterval(interval);
     }
   });
 
   const autoAttack = () => {
-    const newCurrentHP = CurrentHP - multiplier * modifier;
+    const newCurrentHP = CurrentHP - modifier;
     updateProgressbar(newCurrentHP);
   };
 
@@ -129,76 +110,23 @@ export default function Coin() {
       updateRocks();
     } else {
       setCurrentHP(newCurrentHP);
-      const progressPercentage = (newCurrentHP / StartHP) * 100;
-      setProgress(progressPercentage);
+      const percentage = (newCurrentHP / StartHP) * 100;
+      setProgress(percentage);
     }
-  };
-
-  const styles = () => {
-    if (progress <= 20) {
-      return {
-        ".MuiLinearProgress-bar": { backgroundColor: "red" },
-        bar: {
-          animationDuration: "1s",
-        },
-      };
-    }
-    return {};
   };
 
   const updateFlask = () => {
     const randVal = Math.random();
-    console.log(randVal);
     if (randVal <= 0.1) {
-      return setFlask([
-        ...flasks,
-        {
-          name: "common flask",
-          src: flask1,
-          coins: rand(1.05, 1.1),
-          color: "#5c5c5c",
-        },
-      ]);
+      return setFlask([...flasks, flaskItems.commonFlask]);
     } else if (randVal <= 0.15) {
-      return setFlask([
-        ...flasks,
-        {
-          name: "magic flask",
-          src: flask2,
-          coins: rand(1.2, 1.5),
-          color: "#005b8d",
-        },
-      ]);
+      return setFlask([...flasks, flaskItems.magicFlask]);
     } else if (randVal <= 0.17) {
-      return setFlask([
-        ...flasks,
-        {
-          name: "rare flask",
-          src: flask3,
-          coins: rand(1.6, 2),
-          color: "#940000",
-        },
-      ]);
+      return setFlask([...flasks, flaskItems.rareFlask]);
     } else if (randVal <= 0.18) {
-      return setFlask([
-        ...flasks,
-        {
-          name: "unique flask",
-          src: flask4,
-          coins: rand(2.6, 4),
-          color: "#56009f",
-        },
-      ]);
+      return setFlask([...flasks, flaskItems.uniqueFlask]);
     } else if (randVal <= 0.185) {
-      return setFlask([
-        ...flasks,
-        {
-          name: "legendary flask",
-          src: flask5,
-          coins: rand(5, 8),
-          color: "#9f0000",
-        },
-      ]);
+      return setFlask([...flasks, flaskItems.legendaryFlask]);
     }
   };
 
@@ -206,71 +134,19 @@ export default function Coin() {
     const randVal = Math.random();
     console.log(randVal);
     if (randVal <= 0.1) {
-      return setRocks((rocks) => [
-        ...rocks,
-        {
-          name: "common rock",
-          src: rock1,
-          interest: rand(1.05, 1.2),
-          color: "#5c5c5c",
-        },
-      ]);
+      return setRocks([...rocks, rockItems.commonRock]);
     } else if (randVal <= 0.15) {
-      return setRocks((rocks) => [
-        ...rocks,
-        {
-          name: "magic rock",
-          src: rock2,
-          interest: rand(1.3, 2),
-          color: "#005b8d",
-        },
-      ]);
+      return setRocks([...rocks, rockItems.magicRock]);
     } else if (randVal <= 0.17) {
-      return setRocks((rocks) => [
-        ...rocks,
-        {
-          name: "rare rock",
-          src: rock3,
-          interest: rand(2.2, 3),
-          color: "#940000",
-        },
-      ]);
+      return setRocks([...rocks, rockItems.rareRock]);
     } else if (randVal <= 0.18) {
-      return setRocks([
-        ...rocks,
-        {
-          name: "unique rock",
-          src: rock4,
-          interest: rand(3.2, 4),
-          color: "#56009f",
-        },
-      ]);
+      return setRocks([...rocks, rockItems.uniqueRock]);
     } else if (randVal <= 0.185) {
-      return setRocks([
-        ...rocks,
-        {
-          name: "legendary rock",
-          src: rock5,
-          interest: rand(4.1, 5.5),
-          color: "#9f0000",
-        },
-      ]);
+      return setRocks([...rocks, rockItems.legendaryRock]);
     } else if (randVal <= 0.185) {
-      return setRocks([
-        ...rocks,
-        {
-          name: "epic rock",
-          src: rock6,
-          interest: rand(6, 8),
-          color: "#FFFFFF",
-        },
-      ]);
+      return setRocks([...rocks, rockItems.epicRock]);
     }
   };
-
-  function rand(min: number, max: number) {
-    return parseFloat((Math.random() * (max - min) + min).toFixed(2));
-  }
 
   const clickFlask = (index: number) => {
     setMoney(money * flasks[index].coins);
@@ -291,9 +167,7 @@ export default function Coin() {
       <Typography variant="h1" sx={{ fontSize: 100, margin: 0 }}>
         e308
       </Typography>
-      <div>
-        <div>Timer: {formatTime(clock)}</div>
-      </div>
+      <div>Timer: {formatTime(clock)}</div>
       <Box display="flex" flexDirection="column" gap={2}>
         <Card
           sx={{
@@ -306,7 +180,7 @@ export default function Coin() {
             rowGap: 2,
           }}
         >
-          <h3>DPS: {setDesi(multiplier * modifier * 60, 3)}</h3>
+          <h3>DPS: {setDesi(modifier * 60, 3)}</h3>
           <h1>Coins: {money.toFixed(0)}</h1>
           <Box
             sx={{
@@ -315,31 +189,12 @@ export default function Coin() {
               width: "100%",
             }}
           >
-            <LinearProgress
-              variant="determinate"
-              value={progress}
-              sx={{
-                height: "20px",
-                borderRadius: 2,
-                ...styles(),
-                animationDuration: "0.1ms",
-              }}
+            <ProgressBar
+              progress={progress}
+              CurrentHP={CurrentHP}
+              StartHP={StartHP}
+              interest={interest}
             />
-            <Box
-              sx={{
-                fontWeight: 500,
-                fontSize: 20,
-                ...(progress <= 20 && {
-                  color: "red",
-                }),
-              }}
-            >
-              {CurrentHP.toFixed(0)} / {StartHP} HP
-            </Box>
-            <Box>
-              Reward: {(StartHP / 2).toFixed(0)} x {interest.toFixed(2)}{" "}
-              interest = {((StartHP / 2) * interest).toFixed(0)} coins
-            </Box>
           </Box>
           <Button variant="contained" onClick={() => attack()}>
             {clickAmount} damage
@@ -387,38 +242,8 @@ export default function Coin() {
             flexWrap: "wrap",
           }}
         >
-          {flasks?.map((flask, index) => (
-            <Button
-              key={index}
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                backgroundColor: flask.color,
-              }}
-              variant="contained"
-              onClick={() => clickFlask(index)}
-            >
-              <img src={flask.src} width="50px" height="50px" />
-              <span>{flask.name}</span>
-              {flask.coins} x coins
-            </Button>
-          ))}
-          {rocks?.map((rock, index) => (
-            <Button
-              key={index}
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                backgroundColor: rock.color,
-              }}
-              variant="contained"
-              onClick={() => clickRock(index)}
-            >
-              <img src={rock.src} width="50px" height="50px" />
-              <span>{rock.name}</span>
-              {rock.interest} x interest
-            </Button>
-          ))}
+          {mapFlasks(flasks, clickFlask)}
+          {mapRocks(rocks, clickRock)}
         </Card>
       </Box>
     </>
