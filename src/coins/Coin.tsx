@@ -214,17 +214,15 @@ export default function Coin() {
     setMoney(money * flasks[index].coins);
     animateMoneyGained(money * flasks[index].coins - money);
     setMoneyGained(money * flasks[index].coins - money);
-    const copy = [...flasks];
-    copy.splice(index, 1);
-    setFlask(copy);
+    flasks.splice(index, 1);
+    setFlask(flasks);
     play(glassAudio);
   };
 
   const clickRock = (index: number) => {
     setInterest(interest * rocks[index].interest);
-    const copy = [...rocks];
-    copy.splice(index, 1);
-    setRocks(copy);
+    rocks.splice(index, 1);
+    setRocks(rocks);
     play(rockAudio);
   };
 
@@ -234,11 +232,12 @@ export default function Coin() {
   };
 
   const takeAll = () => {
-    let i = 0;
-    while (i < flasks.length || rocks.length) {
-      clickRock(i);
-      clickFlask(i);
-      i++;
+    while (0 < flasks.length) {
+      clickFlask(0);
+    }
+
+    while (0 < rocks.length) {
+      clickRock(0);
     }
   };
 
