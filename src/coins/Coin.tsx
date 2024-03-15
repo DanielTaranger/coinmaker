@@ -249,6 +249,7 @@ export default function Coin() {
 
     if (flasks.splice(0,flasks.length).length !== 0) {
       play(glassAudio);
+    }
     if (rocks.splice(0,rocks.length).length !== 0) {
       play(rockAudio);
     }
