@@ -107,11 +107,11 @@ export default function Coin() {
   const upgradeAutoClicker = () => {
     if (money >= upgradeAutoClickerCost) {
       setAutoClickerAmount(Math.round(autoClickerAmount * 1.5));
-      setMoney(Math.round(money - upgradeClickerCost));
+      setMoney(Math.round(money - upgradeAutoClickerCost));
       setupgradeAutoClickerCost(Math.round(upgradeAutoClickerCost * 1.2));
       setModifier(modifier == 0 ? 0.05 : setDesi(modifier * 1.5, 3));
       play(upgradeAudio);
-      animateMoneyLost(upgradeClickerCost);
+      animateMoneyLost(upgradeAutoClickerCost);
     }
   };
 
@@ -121,7 +121,7 @@ export default function Coin() {
       setMoney(Math.round(money - interestCost));
       setInterestCost(Math.round(interestCost * 1.2));
       play(upgradeAudio);
-      animateMoneyLost(upgradeClickerCost);
+      animateMoneyLost(interestCost);
     }
   };
   const autoAttack = () => {
@@ -231,13 +231,28 @@ export default function Coin() {
     audio.play();
   };
 
-  const takeAll = () => {
-    while (0 < flasks.length) {
-      clickFlask(0);
+  const sumAll = () => {
+    let sumAllFlasks = money;
+    let sumAllRocks = interest;
+    for (let i = 0; i < flasks.length; i++) {
+      sumAllFlasks *= flasks[i].coins;
     }
+    for (let i = 0; i < flasks.length; i++) {
+      sumAllRocks *= rocks[i].interest;
+    }
+    setMoney(sumAllFlasks);
+    setInterest(sumAllRocks);
+    console.log(money);
+  } 
 
-    while (0 < rocks.length) {
-      clickRock(0);
+  const takeAll = () => {
+    sumAll();
+
+    if (flasks.splice(0,flasks.length).length !== 0) {
+      play(glassAudio);
+    }
+    if (rocks.splice(0,rocks.length).length !== 0) {
+      play(rockAudio);
     }
   };
 
