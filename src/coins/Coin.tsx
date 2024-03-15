@@ -237,12 +237,11 @@ export default function Coin() {
     for (let i = 0; i < flasks.length; i++) {
       sumAllFlasks *= flasks[i].coins;
     }
-    for (let i = 0; i < flasks.length; i++) {
+    for (let i = 0; i < rocks.length; i++) {
       sumAllRocks *= rocks[i].interest;
     }
     setMoney(sumAllFlasks);
     setInterest(sumAllRocks);
-    console.log(money);
   } 
 
   const takeAll = () => {
@@ -250,7 +249,6 @@ export default function Coin() {
 
     if (flasks.splice(0,flasks.length).length !== 0) {
       play(glassAudio);
-    }
     if (rocks.splice(0,rocks.length).length !== 0) {
       play(rockAudio);
     }
